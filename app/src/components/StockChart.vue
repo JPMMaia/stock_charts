@@ -4,21 +4,18 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import Chart, { ChartConfiguration } from 'chart.js/auto';
+import Chart, { ChartConfiguration, ChartTypeRegistry } from 'chart.js/auto';
 
-export interface Dataset {
-    label: string;
-    data: number[];
-}
+import * as Chart_data from "../data/Chart_data";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 
-function set_data(labels: string[], datasets: Dataset[]): void {
+function set_data(labels: string[], datasets: Chart_data.Dataset[], type: keyof ChartTypeRegistry): void {
     if (canvas.value !== null) {
         const context = canvas.value.getContext('2d');
         if (context !== null) {
             const config: ChartConfiguration = {
-                type: 'line',
+                type: type,
                 data: {
                     labels: labels,
                     datasets: datasets.map(dataset => { return { label: dataset.label, data: dataset.data }; })
