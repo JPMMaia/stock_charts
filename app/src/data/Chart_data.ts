@@ -1,6 +1,7 @@
 export interface Dataset {
     label: string;
-    data: number[] | object[];
+    data: number[] | [number, number][];
+    fill?: string;
 }
 
 export interface Chart_data {
