@@ -128,6 +128,48 @@ export async function get_cash_flow_data(symbol: string, api_key: string, cache:
     return data;
 }
 
+export async function get_all_symbol_data(symbol: string, api_key: string, storage: Storage, force_fetch: boolean): Promise<Server_data.All_symbol_data> {
+
+    const overview_promise = get_overview_data(symbol, api_key, storage, force_fetch);
+    const time_series_promise = get_time_series_data(symbol, api_key, storage, force_fetch);
+    const income_statement_promise = get_income_statement_data(symbol, api_key, storage, force_fetch);
+    const balance_sheets_promise = get_balance_sheet_data(symbol, api_key, storage, force_fetch);
+    const cash_flow_promise = get_cash_flow_data(symbol, api_key, storage, force_fetch);
+
+    return Promise.all([overview_promise, time_series_promise, income_statement_promise, balance_sheets_promise, cash_flow_promise]).then(
+        (all_data): Server_data.All_symbol_data => {
+
+            if (all_data[0] === undefined) {
+                throw new Error("Could not get overview data!");
+            }
+
+            if (all_data[1] === undefined) {
+                throw new Error("Could not get time series data!");
+            }
+
+            if (all_data[2] === undefined) {
+                throw new Error("Could not get income statements data!");
+            }
+
+            if (all_data[3] === undefined) {
+                throw new Error("Could not get balance sheets data!");
+            }
+
+            if (all_data[4] === undefined) {
+                throw new Error("Could not get cash flow data!");
+            }
+
+            return {
+                overview: all_data[0],
+                time_series: all_data[1],
+                income_statements: all_data[2],
+                balance_sheets: all_data[3],
+                cash_flow: all_data[4],
+            };
+        }
+    );
+}
+
 export async function get_listing_status_data(api_key: string, cache: Storage, force_fetch: boolean): Promise<Server_data.Listing_status_entry[] | undefined> {
 
     const csv = await get_data(undefined, Metric.Listing_status, api_key, cache, force_fetch);

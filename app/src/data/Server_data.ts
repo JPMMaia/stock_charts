@@ -186,6 +186,14 @@ export interface Cash_flow_data {
     annual_reports: Cash_flow_data_entry[];
 }
 
+export interface All_symbol_data {
+    overview: Overview_data;
+    time_series: Time_series_data;
+    income_statements: Income_statement_data;
+    balance_sheets: Balance_sheet_data;
+    cash_flow: Cash_flow_data;
+}
+
 export interface Listing_status_entry {
     symbol: string;
     name: string;
